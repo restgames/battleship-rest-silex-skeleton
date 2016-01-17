@@ -1,0 +1,12 @@
+{
+    "name": "restgames/battleship-rest-silex-skeleton",
+    "require": {
+        "silex/silex": "^1.3"
+    },
+    "authors": [
+        {
+            "name": "Carlos Buenosvinos",
+            "email": "carlos.buenosvinos@gmail.com"
+        }
+    ]
+}
