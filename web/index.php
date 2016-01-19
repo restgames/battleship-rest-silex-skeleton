@@ -1,58 +1,100 @@
 <?php
+
 require_once __DIR__.'/../vendor/autoload.php';
+
+use Battleship\Grid;
+use MyBattleEngine\RedisGameRepository;
+use MyBattleEngine\SillyGame;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 $app = new Silex\Application();
 
-$app->post('/battleship/game', function() {
-    return new \Symfony\Component\HttpFoundation\JsonResponse(
+$app->register(new Predis\Silex\ClientServiceProvider(), [
+    'predis.parameters' => 'tcp://127.0.0.1:6379',
+    'predis.options'    => [
+        'prefix'  => 'silex:',
+        'profile' => '3.0',
+    ]
+]);
+
+$app['game_repository'] = $app->share(function ($app) {
+    return new RedisGameRepository($app['predis']);
+});
+
+$app->post('/battleship/game', function() use ($app) {
+    $game = new SillyGame(
+        Grid::fromString(
+            '0300222200'.
+            '0300000000'.
+            '0310000000'.
+            '0010005000'.
+            '0010005000'.
+            '0010044400'.
+            '0010000000'.
+            '0000000000'.
+            '0000000000'.
+            '0000000000'
+        )
+    );
+
+    $app['game_repository']->save($game);
+
+    return new JsonResponse(
         [
-            'gameId' => 1,
-            'board' =>
-                '03002222'.
-                '03000000'.
-                '03100000'.
-                '00100050'.
-                '00100050'.
-                '00100444'.
-                '00100000'.
-                '00000000'
+            'gameId' => $game->id(),
+            'board' => $game->render()
         ]
     );
 });
 
-$app->post('/battleship/game/{id}/fire', function($id) {
-    $letters = range('A', 'G');
-    $letter = $letters[array_rand($letters)];
+$app->post('/battleship/game/{id}/fire', function($id) use ($app) {
 
-    $numbers = range(1, 8);
-    $number = $numbers[array_rand($numbers)];
+    /**
+     * @var SillyGame
+     */
+    $game = $app['game_repository']->ofId($id);
 
-    return new \Symfony\Component\HttpFoundation\JsonResponse(
+    /**
+     * @var \Battleship\Hole
+     */
+    $hole = $game->nextShot();
+
+    $app['game_repository']->save($game);
+
+    return new JsonResponse(
         [
-            'letter' => $letter,
-            'number' => $number
+            'letter' => $hole->letter(),
+            'number' => $hole->number()
         ]
     );
 });
 
-$app->post('/battleship/game/{id}/shot/{letter}/{number}', function($id, $letter, $number) {
-    $letters = range('A', 'G');
-    $letter = $letters[array_rand($letters)];
+$app->post('/battleship/game/{id}/shot/{letter}/{number}', function($id, $letter, $number) use ($app) {
+    $game = $app['game_repository']->ofId($id);
+    $result = $game->shotAt(new \Battleship\Hole($letter, (int) $number));
+    $app['game_repository']->save($game);
 
-    $numbers = range(1, 8);
-    $number = $numbers[array_rand($numbers)];
-
-    return new \Symfony\Component\HttpFoundation\JsonResponse(
+    return new JsonResponse(
         [
-            'result' => $letter
+            'result' => $result
         ]
     );
 });
 
-$app->delete('/battleship/game/{id}', function($id) {
-    return new \Symfony\Component\HttpFoundation\JsonResponse([
+$app->delete('/battleship/game/{id}', function($id) use ($app) {
+    $game = $app['game_repository']->ofId($id);
+    $app['game_repository']->delete($game);
+
+    return new JsonResponse([
         'result' => 'ok'
     ]);
+});
+
+$app->error(function (\Exception $e, $code) {
+    return new JsonResponse(
+        $e->getMessage(),
+        $code
+    );
 });
 
 $app->run();
