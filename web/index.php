@@ -69,6 +69,21 @@ $app->post('/battleship/game/{id}/fire', function($id) use ($app) {
     );
 });
 
+$app->post('/battleship/game/{id}/shot-result/{result}', function($id, $result) use ($app) {
+    $game = $app['game_repository']->ofId($id);
+
+    // I should do something with the last result
+    // but I'm too silly for that...
+
+    $app['game_repository']->save($game);
+
+    return new JsonResponse(
+        [
+            'result' => 0
+        ]
+    );
+});
+
 $app->post('/battleship/game/{id}/shot/{letter}/{number}', function($id, $letter, $number) use ($app) {
     $game = $app['game_repository']->ofId($id);
     $result = $game->shotAt(new \Battleship\Hole($letter, (int) $number));
