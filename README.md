@@ -1,7 +1,7 @@
-PHP Battleship REST Service Exmaple using Silex
+PHP Battleship REST Service Example using Silex
 ===============================================
 
-A skeleton project for a REST Service that plays Battleship.
+This is a PHP Battleship REST Service Example using Silex. This Battleship Engine is **really simple**. It always places the ships in the same position and shots randomly. With such an Artificial Intelligence (AI) you will not win any game. It's about you to improve it so you can win battles against your mates.
 
 ## Installation
 
@@ -15,10 +15,6 @@ A skeleton project for a REST Service that plays Battleship.
     redis-server &
     php -S localhost:8080 -t web web/index.php
 
-## Considerations
-
-This Battleship Engine is really simple. It always places the ships in the same position and shots randomly. With such an Artificial Intelligence (AI) you will not win any game. It's about you to improve it so you can win battles against your mates.
-
 ## New game
 
 Request:
@@ -27,9 +23,17 @@ Request:
 
 Response:
 
+    HTTP/1.1 200 OK
+    Cache-Control: no-cache
+    Connection: close
+    Content-Type: application/json
+    Date: Thu, 21 Jan 2016 12:48:23 GMT
+    Host: localhost:8080
+    X-Powered-By: PHP/5.6.17
+
     {
-        gameId: "",
-        grid: "0300222200030000000003100000000010005000001000500000100444000010000000000000000000000000000000000000"
+        "board": "0300222200030000000003100000000010005000001000500000100444000010000000000000000000000000000000000000",
+        "gameId": "436fb958-dd1e-4764-9b44-a60393ed1912"
     }
 
 ## Call your shot

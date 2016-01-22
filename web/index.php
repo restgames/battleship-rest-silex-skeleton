@@ -42,7 +42,7 @@ $app->post('/battleship/game', function() use ($app) {
     return new JsonResponse(
         [
             'gameId' => $game->id(),
-            'board' => $game->render()
+            'grid' => $game->render()
         ]
     );
 });

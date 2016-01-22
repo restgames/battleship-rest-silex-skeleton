@@ -18,10 +18,13 @@ class SillyGame implements Game
      */
     private $grid;
 
+    private $nextShot;
+
     public function __construct($grid)
     {
         $this->grid = $grid;
         $this->gameId = Uuid::uuid4()->toString();
+        $this->nextShot = -1;
     }
 
     /**
@@ -47,12 +50,14 @@ class SillyGame implements Game
      */
     public function nextShot()
     {
+        $this->nextShot++;
+
         $letters = range('A', 'J');
         $numbers = range(1, 10);
 
         return new Hole(
-            $letters[array_rand($letters)],
-            $numbers[array_rand($numbers)]
+            $letters[$this->nextShot / 10],
+            $numbers[$this->nextShot % 10]
         );
     }
 }
