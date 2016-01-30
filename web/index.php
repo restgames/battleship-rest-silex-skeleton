@@ -33,7 +33,7 @@ $app->post('/battleship/game', function() use ($app) {
     );
 });
 
-$app->post('/battleship/game/{id}/fire', function($id) use ($app) {
+$app->post('/battleship/game/{id}/shot', function($id) use ($app) {
 
     /**
      * @var SillyGame $game
@@ -70,7 +70,7 @@ $app->post('/battleship/game/{id}/shot-result/{result}', function($id, $result) 
     );
 });
 
-$app->post('/battleship/game/{id}/shot/{letter}/{number}', function($id, $letter, $number) use ($app) {
+$app->post('/battleship/game/{id}/receive-shot/{letter}/{number}', function($id, $letter, $number) use ($app) {
     $game = $app['game_repository']->ofId($id);
     $result = $game->shotAt(new \Battleship\Hole($letter, (int) $number));
     $app['game_repository']->save($game);
