@@ -20,9 +20,20 @@ class SillyGame implements Game
 
     private $nextShot;
 
-    public function __construct($grid)
+    public function __construct()
     {
-        $this->grid = $grid;
+        $this->grid = Grid::fromString(
+            '0300222200'.
+            '0300000000'.
+            '0310000000'.
+            '0010005000'.
+            '0010005000'.
+            '0010044400'.
+            '0010000000'.
+            '0000000000'.
+            '0000000000'.
+            '0000000000'
+        );
         $this->gameId = Uuid::uuid4()->toString();
         $this->nextShot = -1;
     }

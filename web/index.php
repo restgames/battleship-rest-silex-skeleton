@@ -22,21 +22,7 @@ $app['game_repository'] = $app->share(function ($app) {
 });
 
 $app->post('/battleship/game', function() use ($app) {
-    $game = new SillyGame(
-        Grid::fromString(
-            '0300222200'.
-            '0300000000'.
-            '0310000000'.
-            '0010005000'.
-            '0010005000'.
-            '0010044400'.
-            '0010000000'.
-            '0000000000'.
-            '0000000000'.
-            '0000000000'
-        )
-    );
-
+    $game = new SillyGame();
     $app['game_repository']->save($game);
 
     return new JsonResponse(
@@ -50,7 +36,7 @@ $app->post('/battleship/game', function() use ($app) {
 $app->post('/battleship/game/{id}/fire', function($id) use ($app) {
 
     /**
-     * @var SillyGame
+     * @var SillyGame $game
      */
     $game = $app['game_repository']->ofId($id);
 
