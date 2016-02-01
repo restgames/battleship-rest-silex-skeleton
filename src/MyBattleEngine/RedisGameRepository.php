@@ -30,4 +30,9 @@ class RedisGameRepository implements GameRepository
     {
         $this->predis->set('game:'.$game->id(), serialize($game));
     }
+
+    public function delete(Game $game)
+    {
+        $this->predis->del('game:'.$game->id());
+    }
 }

@@ -2,7 +2,6 @@
 
 require_once __DIR__.'/../vendor/autoload.php';
 
-use Battleship\Grid;
 use MyBattleEngine\RedisGameRepository;
 use MyBattleEngine\SillyGame;
 use Symfony\Component\HttpFoundation\JsonResponse;

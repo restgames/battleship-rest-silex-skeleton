@@ -14,4 +14,9 @@ interface GameRepository
      * @param Game $game
      */
     public function save(Game $game);
+
+    /**
+     * @param Game $game
+     */
+    public function delete(Game $game);
 }
